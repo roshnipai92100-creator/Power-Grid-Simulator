@@ -46,6 +46,9 @@ Make sure `utils.py` is included in the project folder because it contains reusa
 
 - `dynamic_series.py` — Handles user inputs and displays the results for dynamic series circuits.
 - `utils.py` — Contains reusable functions for input validation and electrical calculations.
+- `series.py` — Handles user inputs and displays the results for series circuits (hardcoded # of resistors, unlike `dynamic_series.py`).
+- `parallel.py` — Handles user inputs and displays the results for parallel circuits (hardcoded # of resistors, unlike `dynamic_series.py`).
+- `combined.py` — Handles user inputs and displays the results for combined parallel + series circuits (hardcoded # of resistors, unlike `dynamic_series.py`).
 
 ## Current Limitations
 
