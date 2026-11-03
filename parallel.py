@@ -1,30 +1,32 @@
-# Import get_valid_number from utils.py
-from utils import get_valid_number
+# Import from utils.py
+from utils import get_valid_number, calculate_parallel
 
-# Get source voltage and two resistances
-voltage = get_valid_number("Enter source voltage (just the #): ")
-resistance1 = get_valid_number("Enter resistance 1 (just the #): ", positive_only=True)
-resistance2 = get_valid_number("Enter resistance 2 (just the #): ", positive_only=True)
+def main() -> None:
+    # Get source voltage and resistances
+    voltage = get_valid_number("Enter source voltage: ")
+    resistances = []
 
-# Calculations + Outputs (print statements)
-equivalent_resistance = resistance1 * resistance2 / (resistance1 + resistance2)
-print(f"\nEquivalent resistance: {equivalent_resistance:.3f} Ω")
+    # Get the number of resistors
+    number_of_resistors = get_valid_number("Enter number of resistors: ", positive_only=True, int_only=True)
 
-r1_current = voltage / resistance1
-print(f"Current through R1: {r1_current:.3f} A")
-r2_current = voltage / resistance2
-print(f"Current through R2: {r2_current:.3f} A")
+    for i in range(number_of_resistors):
+        resistances.append(get_valid_number(f"Enter resistance {i + 1}: ", positive_only=True))
 
-total_current = r1_current + r2_current
-print(f"Total current: {total_current:.3f} A")
-total_power = voltage * total_current
-print(f"Total power: {total_power:.3f} W")
+    # Calculations + Outputs (print statements)
+    try:
+        equivalent_resistance, total_current, total_power, resistor_currents, kcl_law = calculate_parallel(voltage, resistances)
 
-# Tolerance for floating-point-precision error
-tolerance = 1e-6
-# Check if Kirchhoff's Current Law (KCL) is followed
-current_error = voltage / equivalent_resistance - r1_current - r2_current
-if abs(current_error) <= tolerance:
-    print(f"\nKCL verification: PASSED")
-else:
-    print(f"\nKCL verification: FAILED")
+        print(f"\nEquivalent resistance: {equivalent_resistance:.3f} Ω\n")
+
+        for index, resistor_current in enumerate(resistor_currents, start=1):
+            print(f"Current through R{index}: {resistor_current:.3f} A")
+
+        print(f"\nTotal current: {total_current:.3f} A")
+        print(f"Total power: {total_power:.3f} W")
+
+        print(f"\nKCL verification: {kcl_law}")
+    except ValueError as error:
+        print(error)
+
+if __name__ == '__main__':
+    main()

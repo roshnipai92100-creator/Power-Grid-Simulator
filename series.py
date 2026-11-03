@@ -1,34 +1,32 @@
-# Import get_valid_number from utils.py
-from utils import get_valid_number
+# Import from utils.py
+from utils import get_valid_number, calculate_series
 
-# Get source voltage and two resistances
-voltage = get_valid_number("Enter source voltage (just the #): ")
-resistance1 = get_valid_number("Enter resistance 1 (just the #): ", positive_only=True)
-resistance2 = get_valid_number("Enter resistance 2 (just the #): ", positive_only=True)
+def main() -> None:
+    # Get source voltage and resistances
+    voltage = get_valid_number("Enter source voltage: ")
+    resistances = []
 
-# Calculations + Outputs (print statements)
-total_resistance = resistance1 + resistance2
-print(f"\nTotal resistance: {total_resistance:.3f} Ω")
+    # Get the number of resistors
+    number_of_resistors = get_valid_number("Enter number of resistors: ", positive_only=True, int_only=True)
 
-current = voltage / total_resistance
-print(f"Current: {current:.3f} A")
+    for i in range(number_of_resistors):
+        resistances.append(get_valid_number(f"Enter resistance {i + 1}: ", positive_only=True))
 
-power = voltage * current
-print(f"Power: {power:.3f} W")
+    # Calculations + Outputs (print statements)
+    try:
+        total_resistance, total_current, voltage_drops, total_voltage_drop, kvl_law = calculate_series(voltage, resistances)
 
-voltage_drop1 = current * resistance1
-print(f"\nVoltage drop 1: {voltage_drop1:.3f} V")
-voltage_drop2 = current * resistance2
-print(f"Voltage drop 2: {voltage_drop2:.3f} V")
+        print(f"\nTotal resistance: {total_resistance:.3f} Ω")
+        print(f"Total current: {total_current:.3f} A\n")
 
-total_voltage_drop = voltage_drop1 + voltage_drop2
-print(f"Total voltage drop: {total_voltage_drop:.3f} V")
+        for index, voltage_drop in enumerate(voltage_drops, start=1):
+            print(f"Voltage drop of R{index}: {voltage_drop:.3f} V")
 
-# Tolerance for floating-point-precision error
-tolerance = 1e-6
-# Check if Kirchhoff's Voltage Law (KVL) is followed
-voltage_error = voltage - voltage_drop1 - voltage_drop2
-if abs(voltage_error) <= tolerance:
-    print(f"\nKVL verification: PASSED")
-else:
-    print(f"\nKVL verification: FAILED")
+        print(f"\nTotal voltage drop: {total_voltage_drop:.3f} V")
+
+        print(f"\nKVL verification: {kvl_law}")
+    except ValueError as error:
+        print(error)
+
+if __name__ == '__main__':
+    main()
