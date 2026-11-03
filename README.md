@@ -1,82 +1,108 @@
 # Power Grid Simulator
 
-## Overview
-Power Grid Simulator is a Python-based electrical calculator/simulator that performs calculations for electrical circuits. The goal of this project is to start with basic electrical calculations and eventually build a simulator that can solve and visualize more complex circuits and power grids.
-
-This project is currently in early development.
+A Python-based electrical circuit calculator and simulator. This project was created to explore electrical engineering concepts through programming, starting with basic DC circuit calculations and gradually expanding toward more advanced electrical systems.
 
 ## Features
 
-- Console/terminal-based inputs and outputs
-- Input checking to filter out invalid inputs, such as non-positive resistances
-- Calculate total resistance and current
-- Calculate voltage drops across resistors in series circuits
-- Verify Kirchhoff's Voltage Law (KVL) to make sure the voltage calculations are correct
-- Display calculations with the correct units
+### Series Circuits
+- Calculate total resistance.
+- Calculate total current using Ohm's Law.
+- Calculate voltage drops across individual resistors.
+- Verify Kirchhoff's Voltage Law (KVL).
+- Supports multiple resistors.
 
-## Requirements
+### Parallel Circuits
+- Calculate equivalent resistance.
+- Calculate current through each branch.
+- Calculate total current and power.
+- Verify Kirchhoff's Current Law (KCL).
+- Supports multiple resistors.
 
-- Python 3.10 or later
-- No external packages required for the current implementation
+### Combined Circuits
+- Calculate circuits containing a series resistor and a parallel section.
+- Calculate total resistance and current.
+- Calculate individual voltage drops and branch currents.
+- Calculate total power.
+- Verify both KVL and KCL.
 
-## Installation
+### Input Validation
+- Rejects invalid numerical input.
+- Checks for negative or zero resistance.
+- Rejects NaN and infinite values.
+- Supports integer-only input when needed.
 
-1. Download the source code by downloading the ZIP file from GitHub or cloning the repository.
-2. Extract the ZIP file if you downloaded it.
-3. Open the project folder in a code editor, such as PyCharm or VS Code.
-4. Open the terminal in the project folder.
-
-## Usage
-
-Run the Python file for the calculator you want to use.
-
-For example, to run the dynamic series circuit calculator, enter:
-
-```bash
-python dynamic_series.py
-```
-
-On macOS or Linux, you may need to use `python3` instead of `python`.
-
-The program will ask for inputs such as source voltage, number of resistors, and resistance values. After the inputs are entered, it will return the corresponding electrical calculations.
-
-Make sure `utils.py` is included in the project folder because it contains reusable functions used by the main program.
+### Automated Testing
+- Uses Python's built-in `unittest` framework.
+- Tests series, parallel, and combined circuit calculations.
+- Includes tests for invalid inputs and zero-voltage circuits.
 
 ## Project Structure
 
-- `dynamic_series.py` — Handles user inputs and displays the results for dynamic series circuits.
-- `utils.py` — Contains reusable functions for input validation and electrical calculations.
-- `series.py` — Handles user inputs and displays the results for series circuits (hardcoded # of resistors, unlike `dynamic_series.py`).
-- `parallel.py` — Handles user inputs and displays the results for parallel circuits (hardcoded # of resistors, unlike `dynamic_series.py`).
-- `combined.py` — Handles user inputs and displays the results for combined parallel + series circuits (hardcoded # of resistors, unlike `dynamic_series.py`).
+| File | Purpose |
+|---|---|
+| `utils.py` | Contains reusable input validation and circuit calculation functions. |
+| `series.py` | Runs the series circuit calculator. |
+| `parallel.py` | Runs the parallel circuit calculator. |
+| `combined.py` | Runs the combined circuit calculator. |
+| `test_circuits.py` | Contains automated tests for circuit calculations. |
+
+## Requirements
+
+- Python 3.10 or newer
+- No external Python packages required.
+
+## How to Run
+
+Clone the repository:
+
+```bash
+git clone https://github.com/roshnipai92100-creator/Power-Grid-Simulator.git
+```
+
+Navigate into the project folder:
+
+```bash
+cd Power-Grid-Simulator
+```
+
+Run any calculator:
+
+```bash
+python series.py
+python parallel.py
+python combined.py
+```
+
+Run the automated tests:
+
+```bash
+python -m unittest test_circuits.py -v
+```
+
+## Electrical Concepts
+
+This project uses several fundamental electrical engineering principles:
+
+- **Ohm's Law:** \(V = IR\)
+- **Electrical Power:** \(P = VI\)
+- **Series Resistance:** RT = R1 + R2 + ... + Rn
+- **Parallel Resistance:** 1/RT = 1/R1 + 1/R2 + ... + 1/Rn
+- **Kirchhoff's Voltage Law (KVL):** The sum of voltage changes around a closed loop is zero.
+- **Kirchhoff's Current Law (KCL):** The total current entering a junction equals the total current leaving it.
 
 ## Current Limitations
 
-- Calculations and inputs are currently handled through the console/terminal.
-- Not all circuit types have dedicated calculation functions in `utils.py`.
-- The tolerance used for verifying Kirchhoff's Voltage Law may need improvement for calculations with different numerical scales.
-- A visual circuit builder and power-grid simulation have not been implemented yet.
+- The combined circuit calculator currently supports one resistor in series with two resistors in parallel.
+- The application runs through the command line.
+- AC circuit calculations are not currently supported.
 
 ## Future Plans
 
-### Mixed-Circuit Solver
-- Support series and parallel resistors.
-- Solve combinations of series and parallel circuits.
-- Calculate branch currents and power consumption.
-- Verify Kirchhoff's Voltage Law (KVL) and Kirchhoff's Current Law (KCL).
-
-### Visual Circuit Builder
-- Place batteries and resistors on a canvas.
-- Connect components with wires.
-- Set component values by clicking them.
-- Display calculated voltage and current directly on the circuit.
-
-### Power-Grid Simulator
-- Model generators, transmission lines, transformers, and loads.
-- Calculate power losses and voltage drops.
-- Simulate changing loads and component failures.
-- Visualize how electricity flows through a network.
+- Support for more flexible mixed circuits.
+- Alternating Current (AC) circuit calculations.
+- More advanced electrical engineering calculations.
+- Eventually expand toward power-grid simulation.
 
 ## License
 
-See the [LICENSE](LICENSE) file for information about the license for this project.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
