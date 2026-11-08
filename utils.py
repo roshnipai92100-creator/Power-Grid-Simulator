@@ -1,5 +1,7 @@
 import math
 
+type Circuit = str | tuple[str | Circuit, ...]
+
 # Get valid input function
 def get_valid_number(prompt: str, positive_only: bool = False, int_only: bool = False) -> float | int:
     # Run until valid input
@@ -146,3 +148,40 @@ def calculate_combined(voltage: float | int, resistance1: float | int, resistanc
 
     # Return all calculations
     return parallel_resistance, total_resistance, total_current, r1_voltage, parallel_voltage, r2_current, r3_current, total_power, kvl_law, kcl_law
+
+# Recursive calculation function for dynamic mixed circuits
+def calculate_resistance(circuit: Circuit, resistors: dict[str, float | int]) -> float | int:
+    if isinstance(circuit, str):
+        # Check if resistor exists
+        if circuit not in resistors:
+            raise KeyError("\nResistor does not exist. Check circuit and resistor names")
+
+        resistance = resistors[circuit]
+
+        # Check if resistance is valid
+        if resistance <= 0:
+            raise ValueError("\nResistance must be a positive number")
+
+        if not math.isfinite(resistance):
+            raise ValueError("\nResistance must be a valid, positive number")
+
+        return resistance
+    else:
+        # Check if circuit has resistors
+        if len(circuit) < 3:
+            raise ValueError("\nNot enough resistors in circuit")
+
+        # Check if circuit connection type is valid
+        if circuit[0] != "series" and circuit[0] != "parallel":
+            raise ValueError("\nConnection type must be series or parallel")
+
+        equivalent_resistances = []
+        for resistor in circuit[1:]:
+            resistance = calculate_resistance(resistor, resistors)
+            equivalent_resistances.append(resistance)
+
+        if circuit[0] == "series":
+            return sum(equivalent_resistances)
+        else:
+            equivalent_resistance = 1 / sum(1 / resistance for resistance in equivalent_resistances)
+            return equivalent_resistance

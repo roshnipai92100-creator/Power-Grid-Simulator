@@ -1,7 +1,7 @@
 # Import unittest to test circuit calculators
 import unittest
 # Import from utils.py
-from utils import calculate_series, calculate_parallel, calculate_combined
+from utils import calculate_series, calculate_parallel, calculate_combined, calculate_resistance
 
 # Test series circuit calculator
 class TestSeries(unittest.TestCase):
@@ -35,7 +35,9 @@ class TestSeries(unittest.TestCase):
         with self.assertRaises(ValueError):
             calculate_series(18, [2,0,4])
         with self.assertRaises(ValueError):
-            calculate_series(16, [2,4,float("nan")])
+            calculate_series(17, [6, -10, 8])
+        with self.assertRaises(ValueError):
+            calculate_series(16, [3,4,float("nan")])
         with self.assertRaises(ValueError):
             calculate_series(11, [8,float("inf"),5])
 
@@ -83,6 +85,8 @@ class TestParallel(unittest.TestCase):
 
     # Test if ValueError is raised when a non-positive number, NaN, or inf is passed as a resistance
     def test_parallel_invalid_resistance(self) -> None:
+        with self.assertRaises(ValueError):
+            calculate_parallel(13, [3, 0, 5])
         with self.assertRaises(ValueError):
             calculate_parallel(15, [6, -3, 2])
         with self.assertRaises(ValueError):
@@ -135,6 +139,8 @@ class TestCombined(unittest.TestCase):
     # Test if ValueError is raised when a non-positive number, NaN, or inf is passed as a resistance
     def test_combined_invalid_resistance(self) -> None:
         with self.assertRaises(ValueError):
+            calculate_combined(22, 12, -10, 11)
+        with self.assertRaises(ValueError):
             calculate_combined(24, 4, 0, 3)
         with self.assertRaises(ValueError):
             calculate_combined(21, 7, float("nan"), 4)
@@ -160,3 +166,166 @@ class TestCombined(unittest.TestCase):
         self.assertAlmostEqual(total_power, 0)
         self.assertEqual(kvl_law, "PASSED")
         self.assertEqual(kcl_law, "PASSED")
+
+# Test dynamic_combined circuit calculator
+class TestCalculateResistance(unittest.TestCase):
+    # Test no-nest series circuit
+    def test_calculate_resistance_series(self) -> None:
+        resistors = {
+            "R1": 10,
+            "R2": 20,
+            "R3": 30
+        }
+        circuit = ("series", "R1", "R2")
+        resistance = calculate_resistance(circuit, resistors)
+
+        self.assertAlmostEqual(resistance, 30)
+
+    # Test no-nest parallel circuit
+    def test_calculate_resistance_parallel(self) -> None:
+        resistors = {
+            "R1": 10,
+            "R2": 20,
+            "R3": 30
+        }
+        circuit = ("parallel", "R1", "R2")
+        resistance = calculate_resistance(circuit, resistors)
+
+        self.assertAlmostEqual(resistance, 20/3)
+
+    # Test series inside parallel circuit
+    def test_calculate_resistance_series_in_parallel(self) -> None:
+        resistors = {
+            "R1": 10,
+            "R2": 20,
+            "R3": 30
+        }
+        circuit = ("parallel", ("series", "R1", "R2"), "R3")
+        resistance = calculate_resistance(circuit, resistors)
+
+        self.assertAlmostEqual(resistance, 15)
+
+    # Test parallel inside series circuit
+    def test_calculate_resistance_parallel_in_series(self) -> None:
+        resistors = {
+            "R1": 10,
+            "R2": 20,
+            "R3": 30
+        }
+        circuit = ("series", "R1", ("parallel", "R2", "R3"))
+        resistance = calculate_resistance(circuit, resistors)
+
+        self.assertAlmostEqual(resistance, 22)
+
+    # Test multi-nested circuit
+    def test_calculate_resistance_multi_nested(self) -> None:
+        resistors = {
+            "R1": 10,
+            "R2": 20,
+            "R3": 30
+        }
+        circuit = ("series",
+            "R1",
+            ("parallel",
+                "R2",
+                ("series", "R3", "R1")
+            )
+        )
+        resistance = calculate_resistance(circuit, resistors)
+
+        self.assertAlmostEqual(resistance, 70/3)
+
+    # Test single resistor circuits
+    def test_calculate_resistance_single_resistor(self) -> None:
+        resistors = {
+            "R1": 10
+        }
+        circuit = "R1"
+
+        resistance = calculate_resistance(circuit, resistors)
+
+        self.assertAlmostEqual(resistance, 10)
+
+    # Test a circuit with three resistors in parallel
+    def test_calculate_resistance_three_parallel(self) -> None:
+        resistors = {
+            "R1": 10,
+            "R2": 20,
+            "R3": 30
+        }
+        circuit = ("parallel", "R1", "R2", "R3")
+        resistance = calculate_resistance(circuit, resistors)
+
+        self.assertAlmostEqual(resistance, 60/11)
+
+    # Test if ValueError is raised when resistance = NaN or inf
+    def test_calculate_resistance_invalid_resistance(self) -> None:
+        resistors = {
+            "R1": float("nan"),
+            "R2": float("inf"),
+            "R3": 30,
+            "R4": float("-inf"),
+            "R5": 50
+        }
+        circuit1 = "R1"
+        circuit2 = ("parallel", "R2", "R3")
+        circuit3 = ("series", "R4", "R5")
+
+        with self.assertRaises(ValueError):
+            calculate_resistance(circuit1, resistors)
+        with self.assertRaises(ValueError):
+            calculate_resistance(circuit2, resistors)
+        with self.assertRaises(ValueError):
+            calculate_resistance(circuit3, resistors)
+
+    # Test if ValueError is raised when resistance = 0
+    def test_calculate_resistance_zero_resistance(self) -> None:
+        resistors = {
+            "R1": 0
+        }
+        circuit = "R1"
+
+        with self.assertRaises(ValueError):
+            calculate_resistance(circuit, resistors)
+
+    # Test if ValueError is raised when resistance is negative
+    def test_calculate_resistance_negative_resistance(self) -> None:
+        resistors = {
+            "R1": -10
+        }
+        circuit = "R1"
+
+        with self.assertRaises(ValueError):
+            calculate_resistance(circuit, resistors)
+
+    # Test if KeyError is raised when circuit contains an unknown resistor
+    def test_calculate_resistance_unknown_resistor(self) -> None:
+        resistors = {
+            "R1": 10,
+            "R2": 20,
+            "R3": 30
+        }
+        circuit = "R4"
+
+        with self.assertRaises(KeyError):
+            calculate_resistance(circuit, resistors)
+
+    # Test if ValueError is raised when the circuit doesn't contain resistors
+    def test_calculate_resistance_zero_resistors(self) -> None:
+        resistors = {}
+        circuit = ("series",)
+
+        with self.assertRaises(ValueError):
+            calculate_resistance(circuit, resistors)
+
+    # Test if ValueError is raised when the circuit has an invalid connection type
+    def test_calculate_resistance_invalid_connection(self) -> None:
+        resistors = {
+            "R1": 10,
+            "R2": 20,
+            "R3": 30
+        }
+        circuit = ("mixed", "R1", "R2")
+
+        with self.assertRaises(ValueError):
+            calculate_resistance(circuit, resistors)
