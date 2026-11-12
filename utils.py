@@ -185,3 +185,111 @@ def calculate_resistance(circuit: Circuit, resistors: dict[str, float | int]) ->
         else:
             equivalent_resistance = 1 / sum(1 / resistance for resistance in equivalent_resistances)
             return equivalent_resistance
+
+# Calculation function for the power of a single resistor
+def calculate_power(voltage: float | int, resistance: float | int) -> float | int:
+    # Validate voltage and resistance
+    if not math.isfinite(voltage):
+        raise ValueError("\nVoltage must be a valid number")
+    if not math.isfinite(resistance):
+        raise ValueError("\nResistance must be a valid, positive number")
+    if resistance <= 0:
+        raise ValueError("\nResistance must be a positive number")
+
+    # Calculate and return power
+    power = (voltage ** 2) / resistance
+    return power
+
+# Runs calculations off of calculate_resistance
+def calculate_circuit(circuit: Circuit, voltage: float | int,  resistors: dict[str, float | int]) -> tuple[dict[str, dict[str, float | int]], float | int, float | int | None, float | int | None]:
+    total_resistance = calculate_resistance(circuit, resistors)
+    total_current = voltage / total_resistance
+
+    # KVL and KCL Law Variables
+    total_voltage_drop = 0
+    total_current_change = 0
+
+    resistor_results = dict()
+    if isinstance(circuit, str):
+        power = calculate_power(voltage, total_resistance)
+        resistor_results[circuit] = dict()
+        resistor_results[circuit]["voltage"] = voltage
+        resistor_results[circuit]["current"] = total_current
+        resistor_results[circuit]["power"] = power
+
+        # If the circuit is a single resistor, there isn't any changes in voltage/current
+        total_voltage_drop = None
+        total_current_change = None
+
+        return resistor_results, total_current, total_voltage_drop, total_current_change
+    else:
+        if circuit[0] == "series":
+            total_current_change = None
+
+            for resistor in circuit[1:]:
+                equivalent_resistance = calculate_resistance(resistor, resistors)
+                voltage = total_current * equivalent_resistance
+
+                result, *_, child_current_change = calculate_circuit(resistor, voltage, resistors)
+
+                if child_current_change is not None:
+                    total_current_change = child_current_change
+
+                resistor_results.update(result)
+
+                total_voltage_drop += voltage
+
+            return resistor_results, total_current, total_voltage_drop, total_current_change
+        else:
+            total_voltage_drop = None
+
+            for resistor in circuit[1:]:
+                result, child_current, child_voltage_drop,_ = calculate_circuit(resistor, voltage, resistors)
+
+                resistor_results.update(result)
+
+                if child_voltage_drop is not None:
+                    total_voltage_drop = child_voltage_drop
+
+                if child_current is not None:
+                    total_current_change += child_current
+
+            return resistor_results, total_current, total_voltage_drop, total_current_change
+
+# Function to check KVL law
+def check_kvl(voltage: float | int, total_voltage_drop: float | int | None, tolerance: float = 1e-6) -> str:
+    # Check if Kirchhoff's Voltage Law (KVL) is followed
+    if total_voltage_drop is None:
+        kvl_law = "N/A"
+    else:
+        voltage_error = voltage - total_voltage_drop
+        if abs(voltage_error) <= tolerance:
+            kvl_law = "PASSED"
+        else:
+            kvl_law = "FAILED"
+
+    return kvl_law
+
+
+# Function to check KCL law
+def check_kcl(total_current: float | int, total_current_change: float | int | None, tolerance: float = 1e-6) -> str:
+    # Check if Kirchhoff's Current Law (KCL) is followed
+    if total_current_change is None:
+        kcl_law = "N/A"
+    else:
+        current_error = total_current - total_current_change
+        if abs(current_error) <= tolerance:
+            kcl_law = "PASSED"
+        else:
+            kcl_law = "FAILED"
+
+    return kcl_law
+
+# Function to check power conservation
+def check_power_conservation(total_power: float | int, source_power: float | int, tolerance: float = 1e-6) -> str:
+    if abs(total_power - source_power) <= tolerance:
+        power_conservation = "PASSED"
+    else:
+        power_conservation = "FAILED"
+
+    return power_conservation
