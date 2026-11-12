@@ -1,112 +1,100 @@
 # Power Grid Simulator
 
-A Python-based electrical circuit calculator that simulates basic resistor circuits and calculates important electrical values using Ohm's Law and Kirchhoff's Laws.
-
-This project is designed to help me develop my Python programming skills while exploring electrical engineering concepts.
+A Python-based electrical circuit calculator and simulator. This project started with basic series and parallel resistor calculations and has expanded to support dynamic, nested circuits and DC circuit analysis.
 
 ## Features
 
-### 1. Series Circuit Calculator
-- Accepts a source voltage and multiple resistor values.
-- Calculates total resistance and current.
-- Calculates the voltage drop across each resistor.
-- Checks Kirchhoff's Voltage Law (KVL).
+### Circuit Calculations
+- Calculate equivalent resistance in series circuits.
+- Calculate equivalent resistance in parallel circuits.
+- Calculate equivalent resistance in nested series-parallel circuits.
+- Support dynamically entered resistor quantities and resistance values.
 
-### 2. Parallel Circuit Calculator
-- Accepts a source voltage and multiple resistor values.
-- Calculates equivalent resistance.
-- Calculates current through each resistor.
-- Calculates total current and power.
-- Checks Kirchhoff's Current Law (KCL).
+### DC Circuit Analysis
+- Calculate total circuit resistance.
+- Calculate total circuit current.
+- Calculate voltage across individual resistors.
+- Calculate current through individual resistors.
+- Calculate power used by individual resistors.
+- Verify Kirchhoff's Voltage Law (KVL).
+- Verify Kirchhoff's Current Law (KCL).
+- Verify power conservation.
 
-### 3. Combined Circuit Calculator
-- Calculates a circuit containing one resistor in series with two parallel resistors.
-- Calculates total resistance, current, voltage drops, branch currents, and power.
-- Checks KVL and KCL.
+### Input Validation
+- Check that resistance values are positive.
+- Reject invalid numerical inputs.
+- Prevent duplicate or invalid resistor names.
+- Handle invalid circuit configurations.
 
-### 4. Dynamic Mixed Circuit Calculator
-- Allows users to create circuits using multiple resistors.
-- Allows components to be combined in series or parallel.
-- Supports nested series-parallel circuit configurations.
-- Uses recursion to calculate equivalent resistance.
-- Automatically displays the equivalent resistance of the completed circuit.
-
-## Project Structure
-
-| File | Purpose |
-|---|---|
-| `utils.py` | Contains reusable input validation and circuit calculation functions. |
-| `dynamic_series.py` | Calculates series circuits with a user-defined number of resistors. |
-| `parallel.py` | Calculates parallel circuits with a user-defined number of resistors. |
-| `combined.py` | Calculates a predefined combined series-parallel circuit. |
-| `dynamic_combined.py` | Allows users to construct nested series-parallel circuits dynamically. |
-| `test_circuits.py` | Contains unit tests for the circuit calculation functions. |
+### Testing
+- Includes automated unit tests using Python's `unittest` framework.
+- Tests calculation functions, input validation, and circuit law verification.
 
 ## Requirements
 
 - Python 3.12 or newer.
-- No external Python packages are required.
 
-## Getting Started
+## Project Structure
 
-Clone the repository:
+| File | Description |
+|---|---|
+| `series.py` | Series circuit calculator |
+| `dynamic_series.py` | Dynamic series circuit calculator |
+| `parallel.py` | Parallel circuit calculator |
+| `combined.py` | Fixed mixed circuit calculator |
+| `dynamic_combined.py` | Dynamic nested series-parallel circuit calculator |
+| `utils.py` | Reusable calculation and validation functions |
+| `test_circuits.py` | Automated unit tests |
 
-```bash
-git clone https://github.com/roshnipai92100-creator/Power-Grid-Simulator.git
-```
+## How to Run
 
-Navigate into the project directory:
+1. Clone or download the repository.
+2. Open the project in your Python IDE.
+3. Run the Python script for the circuit you want to calculate.
+4. Follow the prompts to enter voltage, resistor quantities, and resistance values.
 
-```bash
-cd Power-Grid-Simulator
-```
-
-Run a calculator:
-
-```bash
-python dynamic_series.py
-```
-
-Other available programs:
-
-```bash
-python parallel.py
-python combined.py
-python dynamic_combined.py
-```
+For dynamic mixed circuits, you can combine components into series or parallel groups until the entire circuit is connected.
 
 ## Running Tests
 
-The project uses Python's built-in `unittest` framework.
-
-Run the test suite:
+Run the following command from the project directory:
 
 ```bash
 python -m unittest test_circuits.py -v
 ```
 
+This runs the automated tests and displays the results.
+
 ## Concepts Used
+
+This project uses several electrical engineering and programming concepts:
 
 - Ohm's Law
 - Series and parallel resistance
-- Kirchhoff's Voltage Law (KVL)
-- Kirchhoff's Current Law (KCL)
-- Python functions and dictionaries
-- Input validation and exception handling
-- Recursion
+- Kirchhoff's Voltage Law
+- Kirchhoff's Current Law
+- Electrical power
+- Recursive functions
+- Dictionaries and tuples
+- Input validation
 - Unit testing
 
 ## Current Limitations
 
-The dynamic mixed-circuit calculator currently calculates equivalent resistance. Calculating individual voltage drops, branch currents, and power throughout arbitrary nested circuits is a potential future improvement.
+- The simulator currently focuses on DC circuits.
+- Circuit components are limited to resistors.
+- Capacitors, inductors, and AC analysis are not implemented yet.
+- Circuit construction and results are handled through the console.
 
-## Future Improvements
+## Future Plans
 
-- Calculate voltage and current throughout dynamically constructed mixed circuits.
-- Add power calculations for individual components.
-- Expand circuit validation and testing.
-- Explore more advanced electrical circuit configurations.
+- Introduce AC voltage and current calculations.
+- Add RMS and peak voltage and current.
+- Add frequency and period calculations.
+- Introduce capacitors, inductors, and impedance.
+- Expand into more advanced AC circuit analysis.
+- Explore a graphical circuit interface.
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+See [LICENSE](LICENSE) for license information.
