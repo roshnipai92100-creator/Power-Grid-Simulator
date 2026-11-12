@@ -1,57 +1,53 @@
 # Power Grid Simulator
 
-A Python-based electrical circuit calculator and simulator. This project was created to explore electrical engineering concepts through programming, starting with basic DC circuit calculations and gradually expanding toward more advanced electrical systems.
+A Python-based electrical circuit calculator that simulates basic resistor circuits and calculates important electrical values using Ohm's Law and Kirchhoff's Laws.
+
+This project is designed to help me develop my Python programming skills while exploring electrical engineering concepts.
 
 ## Features
 
-### Series Circuits
-- Calculate total resistance.
-- Calculate total current using Ohm's Law.
-- Calculate voltage drops across individual resistors.
-- Verify Kirchhoff's Voltage Law (KVL).
-- Supports multiple resistors.
+### 1. Series Circuit Calculator
+- Accepts a source voltage and multiple resistor values.
+- Calculates total resistance and current.
+- Calculates the voltage drop across each resistor.
+- Checks Kirchhoff's Voltage Law (KVL).
 
-### Parallel Circuits
-- Calculate equivalent resistance.
-- Calculate current through each branch.
-- Calculate total current and power.
-- Verify Kirchhoff's Current Law (KCL).
-- Supports multiple resistors.
+### 2. Parallel Circuit Calculator
+- Accepts a source voltage and multiple resistor values.
+- Calculates equivalent resistance.
+- Calculates current through each resistor.
+- Calculates total current and power.
+- Checks Kirchhoff's Current Law (KCL).
 
-### Combined Circuits
-- Calculate circuits containing a series resistor and a parallel section.
-- Calculate total resistance and current.
-- Calculate individual voltage drops and branch currents.
-- Calculate total power.
-- Verify both KVL and KCL.
+### 3. Combined Circuit Calculator
+- Calculates a circuit containing one resistor in series with two parallel resistors.
+- Calculates total resistance, current, voltage drops, branch currents, and power.
+- Checks KVL and KCL.
 
-### Input Validation
-- Rejects invalid numerical input.
-- Checks for negative or zero resistance.
-- Rejects NaN and infinite values.
-- Supports integer-only input when needed.
-
-### Automated Testing
-- Uses Python's built-in `unittest` framework.
-- Tests series, parallel, and combined circuit calculations.
-- Includes tests for invalid inputs and zero-voltage circuits.
+### 4. Dynamic Mixed Circuit Calculator
+- Allows users to create circuits using multiple resistors.
+- Allows components to be combined in series or parallel.
+- Supports nested series-parallel circuit configurations.
+- Uses recursion to calculate equivalent resistance.
+- Automatically displays the equivalent resistance of the completed circuit.
 
 ## Project Structure
 
 | File | Purpose |
 |---|---|
 | `utils.py` | Contains reusable input validation and circuit calculation functions. |
-| `series.py` | Runs the series circuit calculator. |
-| `parallel.py` | Runs the parallel circuit calculator. |
-| `combined.py` | Runs the combined circuit calculator. |
-| `test_circuits.py` | Contains automated tests for circuit calculations. |
+| `dynamic_series.py` | Calculates series circuits with a user-defined number of resistors. |
+| `parallel.py` | Calculates parallel circuits with a user-defined number of resistors. |
+| `combined.py` | Calculates a predefined combined series-parallel circuit. |
+| `dynamic_combined.py` | Allows users to construct nested series-parallel circuits dynamically. |
+| `test_circuits.py` | Contains unit tests for the circuit calculation functions. |
 
 ## Requirements
 
-- Python 3.10 or newer
-- No external Python packages required.
+- Python 3.12 or newer.
+- No external Python packages are required.
 
-## How to Run
+## Getting Started
 
 Clone the repository:
 
@@ -59,49 +55,57 @@ Clone the repository:
 git clone https://github.com/roshnipai92100-creator/Power-Grid-Simulator.git
 ```
 
-Navigate into the project folder:
+Navigate into the project directory:
 
 ```bash
 cd Power-Grid-Simulator
 ```
 
-Run any calculator:
+Run a calculator:
 
 ```bash
-python series.py
-python parallel.py
-python combined.py
+python dynamic_series.py
 ```
 
-Run the automated tests:
+Other available programs:
+
+```bash
+python parallel.py
+python combined.py
+python dynamic_combined.py
+```
+
+## Running Tests
+
+The project uses Python's built-in `unittest` framework.
+
+Run the test suite:
 
 ```bash
 python -m unittest test_circuits.py -v
 ```
 
-## Electrical Concepts
+## Concepts Used
 
-This project uses several fundamental electrical engineering principles:
-
-- **Ohm's Law:** \(V = IR\)
-- **Electrical Power:** \(P = VI\)
-- **Series Resistance:** RT = R1 + R2 + ... + Rn
-- **Parallel Resistance:** 1/RT = 1/R1 + 1/R2 + ... + 1/Rn
-- **Kirchhoff's Voltage Law (KVL):** The sum of voltage changes around a closed loop is zero.
-- **Kirchhoff's Current Law (KCL):** The total current entering a junction equals the total current leaving it.
+- Ohm's Law
+- Series and parallel resistance
+- Kirchhoff's Voltage Law (KVL)
+- Kirchhoff's Current Law (KCL)
+- Python functions and dictionaries
+- Input validation and exception handling
+- Recursion
+- Unit testing
 
 ## Current Limitations
 
-- The combined circuit calculator currently supports one resistor in series with two resistors in parallel.
-- The application runs through the command line.
-- AC circuit calculations are not currently supported.
+The dynamic mixed-circuit calculator currently calculates equivalent resistance. Calculating individual voltage drops, branch currents, and power throughout arbitrary nested circuits is a potential future improvement.
 
-## Future Plans
+## Future Improvements
 
-- Support for more flexible mixed circuits.
-- Alternating Current (AC) circuit calculations.
-- More advanced electrical engineering calculations.
-- Eventually expand toward power-grid simulation.
+- Calculate voltage and current throughout dynamically constructed mixed circuits.
+- Add power calculations for individual components.
+- Expand circuit validation and testing.
+- Explore more advanced electrical circuit configurations.
 
 ## License
 
